@@ -1,0 +1,143 @@
+##############################################################
+## MOD Title: Admin Userlist regIP add on
+## MOD Author: EXreaction < exreaction@gotechzilla.com > (Nathan Guse) http://www.gotechzilla.com
+## MOD Description: This makes it so that you can see the IP address that the person registered with
+##     in the admin Userlist mod
+## MOD Version: 1.0.1
+##
+## Installation Level: (Easy)
+## Installation Time: ~2 Minutes
+## Files To Edit: admin/admin_userlist.php
+##                templates/subSilver/admin/userlist_body.tpl
+## Included Files: none
+## License: http://opensource.org/licenses/gpl-license.php GNU General Public License v2
+##############################################################
+## For security purposes, please check: http://www.phpbb.com/mods/
+## for the latest version of this MOD. Although MODs are checked
+## before being allowed in the MODs Database there is no guarantee
+## that there are no security problems within the MOD. No support
+## will be given for MODs not found within the MODs Database which
+## can be found at http://www.phpbb.com/mods/
+##############################################################
+## Author Notes:
+## Both the Admin Userlist 2.0.6 mod by Milkboy31 and wGEric and the Log IP Address on Registration mod by TerraFrost MUST 
+##    be installed before installing this mod, otherwise you are just wasting your time. ;)
+##
+## Log IP Address on Registration mod: http://www.phpbb.com/phpBB/viewtopic.php?t=281477
+##############################################################
+## MOD History:
+## 
+##   2006-02-22 - Version 1.0.0
+##      - Initial Release
+##   2006-06-24 - Version 1.0.1
+##      - Updated to work with Admin Userlist 2.0.6
+##############################################################
+## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
+##############################################################
+
+# 
+#-----[ OPEN ]------------------------------------------
+# 
+
+admin/admin_userlist.php
+
+#
+#-----[ FIND ]------------------------------------------
+# 
+
+		//
+		// set up template varibles
+		//
+		$template->assign_vars(array(
+
+# 
+#-----[ AFTER, ADD ]------------------------------------------
+#
+
+			'L_REGIP' => $lang['Registration_IP'],
+
+#
+#-----[ FIND ]------------------------------------------
+# 
+
+			//
+			// setup user row template varibles
+			//
+			$template->assign_block_vars('user_row', array(
+
+# 
+#-----[ AFTER, ADD ]------------------------------------------
+#
+
+				'USER_REGIP' => decode_ip(( $row['user_regip'] )),
+
+# 
+#-----[ OPEN ]------------------------------------------
+#
+
+templates/subSilver/admin/userlist_body.tpl
+
+#
+#-----[ FIND ]------------------------------------------
+#
+
+		<th width="15%">{L_EMAIL}</th>
+
+# 
+#-----[ AFTER, ADD ]------------------------------------------
+#
+
+		<th width="15%">{L_REGIP}:</th>
+
+#
+#-----[ FIND ]------------------------------------------
+#
+
+		<td class="{user_row.ROW_CLASS}"><span class="gen">{user_row.EMAIL}</span></td>
+
+# 
+#-----[ AFTER, ADD ]------------------------------------------
+#
+
+		<td class="{user_row.ROW_CLASS}"><span class="gen">{user_row.USER_REGIP}</span></td>
+
+#
+#-----[ FIND ]------------------------------------------
+#
+
+		<td class="{user_row.ROW_CLASS}" colspan="8" width="100%">
+
+#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+
+		<td class="{user_row.ROW_CLASS}" colspan="9" width="100%">
+
+#
+#-----[ FIND ]------------------------------------------
+#
+
+      <td class="catbottom" colspan="9"> 
+
+#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+
+      <td class="catbottom" colspan="10"> 
+
+#
+#-----[ FIND ]------------------------------------------
+#
+
+		<td class="catbottom" colspan="9">
+
+#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+
+		<td class="catbottom" colspan="10">
+
+#
+#-----[ SAVE/CLOSE ALL FILES ]------------------------------------------
+#
+# EoM

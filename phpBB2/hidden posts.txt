@@ -1,0 +1,156 @@
+ALTER TABLE `phpbb_posts` ADD `hidden` BOOL NOT NULL ;
+
+Open
+posting.php
+
+Find
+		$sql = "SELECT f.*, t.topic_id, t.topic_status, t.topic_type, t.topic_first_post_id, t.topic_last_post_id, t.topic_vote, p.post_id, p.poster_id" . $select_sql . " 
+
+Inline Find
+, p.poster_id
+
+Inline After, Add
+, p.hidden
+
+Find
+$attach_sig = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['attach_sig']) ) ? TRUE : 0 ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? 0 : $userdata['user_attachsig'] );
+
+After, Add
+$hidden = ( !empty($HTTP_POST_VARS['hidden']) ) ? 1 : 0;
+
+Find
+				submit_post($mode, $post_data, $return_message, $return_meta, $forum_id, $topic_id, $post_id, $poll_id, $topic_type, $bbcode_on, $html_on, $smilies_on, $attach_sig, $bbcode_uid, str_replace("\'", "''", $username), str_replace("\'", "''", $subject), str_replace("\'", "''", $message), str_replace("\'", "''", $poll_title), $poll_options, $poll_length);
+
+Inline Find
+$attach_sig,
+
+Inline After, Add
+ $hidden,
+
+Find
+//
+// Delete selection
+//
+if ( $mode == 'editpost' && ( ( $is_auth['auth_delete'] && $post_data['last_post'] && ( !$post_data['has_poll'] || $post_data['edit_poll'] ) ) || $is_auth['auth_mod'] ) )
+{
+	$template->assign_block_vars('switch_delete_checkbox', array());
+}
+
+After, Add
+//
+// Hide selection
+//
+if ( $mode == 'editpost' && ( ($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD) ) )
+{
+	$template->assign_block_vars('switch_hide_checkbox', array());
+}
+
+Find
+	'S_NOTIFY_CHECKED' => ( $notify_user ) ? 'checked="checked"' : '', 
+
+After, add
+	'S_HIDE_CHECKED' => ( $post_info['hidden'] ) ? 'checked="checked"' : '', 
+
+
+Open
+viewtopic.php
+
+Find
+	$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
+
+Inline Find
+$i
+
+Inline Replace with
+ ($i + $row_color_plus)
+
+Find
+	$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];
+
+Inline Find
+$i
+
+Inline Replace with
+ ($i + $row_color_plus)
+
+Find
+}
+
+$template->pparse('body');
+
+Before, add
+	if ($postrow[$i]['hidden'] && ( ($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == MOD) ) )
+	{
+		$template->assign_block_vars('postrow.switch_is_hidden', array()); 
+		$template->assign_block_vars('postrow.switch_view', array()); 
+	}
+	else if ($postrow[$i]['hidden'])
+	{
+		$row_color_plus++;
+	}
+	else if (!$postrow[$i]['hidden'])
+	{
+		$template->assign_block_vars('postrow.switch_view', array());
+	}
+
+
+Open
+includes/functions_post.php
+
+Find
+function submit_post($mode, &$post_data, &$message, &$meta, &$forum_id, &$topic_id, &$post_id, &$poll_id, &$topic_type, &$bbcode_on, &$html_on, &$smilies_on, &$attach_sig, &$bbcode_uid, $post_username, $post_subject, $post_message, $poll_title, &$poll_options, &$poll_length)
+
+Inline Find
+&$attach_sig,
+
+Inline After, Add
+ &$hidden,
+
+Find
+	$sql = ($mode != "editpost") ? "INSERT INTO " . POSTS_TABLE . " (topic_id, forum_id, poster_id, post_username, post_time, poster_ip, enable_bbcode, enable_html, enable_smilies, enable_sig) VALUES ($topic_id, $forum_id, " . $userdata['user_id'] . ", '$post_username', $current_time, '$user_ip', $bbcode_on, $html_on, $smilies_on, $attach_sig)" : "UPDATE " . POSTS_TABLE . " SET post_username = '$post_username', enable_bbcode = $bbcode_on, enable_html = $html_on, enable_smilies = $smilies_on, enable_sig = $attach_sig" . $edited_sql . " WHERE post_id = $post_id";
+
+Inline Find
+enable_sig = $attach_sig
+
+Inline After, Add
+, hidden = $hidden
+
+
+Open
+templates/subSilver/posting_body.tpl
+
+Find
+		  <!-- END switch_delete_checkbox -->
+
+After, Add
+		  <!-- BEGIN switch_hide_checkbox -->
+		  <tr> 
+			<td> 
+			  <input type="checkbox" name="hidden" {S_HIDE_CHECKED} />
+			</td>
+			<td><span class="gen">Soft Delete Post</span></td>
+		  </tr>
+		  <!-- END switch_hide_checkbox -->
+
+
+Open
+viewtopic_body.tpl
+
+Find
+	<!-- BEGIN postrow -->
+
+After, add
+	<!-- BEGIN switch_is_hidden -->
+	<tr>
+		<td class="{postrow.ROW_CLASS}" align="center" colspan="2">
+			<font color="red"><b>The Following Post Has Been Soft Deleted:</b></font>
+		</td>
+	</tr>
+	<!-- END switch_is_hidden -->
+	<!-- BEGIN switch_view -->
+
+Find
+	<!-- END postrow -->
+
+Before, add
+	<!-- END switch_view -->

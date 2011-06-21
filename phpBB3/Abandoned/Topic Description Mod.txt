@@ -1,0 +1,119 @@
+##############################################################
+## MOD Title: Topic Description
+## MOD Author: EXreaction < exreaction@lithiumstudios.org > (Nathan Guse) http://www.lithiumstudios.org
+## MOD Description: Displays begining of post text on topic title in viewforum.
+## MOD Version: 0.8.0(BETA)
+##
+## Installation Level: Easy
+## Installation Time: ~3 Minutes
+## Files To Edit:	viewforum.php
+##					styles/subSilver/templates/viewforum_body.html
+## Included Files:	none
+## License: http://opensource.org/licenses/gpl-license.php GNU General Public License v2
+##############################################################
+## For security purposes, please check: http://www.phpbb.com/mods/
+## for the latest version of this MOD. Although MODs are checked
+## before being allowed in the MODs Database there is no guarantee
+## that there are no security problems within the MOD. No support
+## will be given for MODs not found within the MODs Database which
+## can be found at http://www.phpbb.com/mods/
+##############################################################
+## Author Notes:
+##   Designed for phpBB3 2006-10-16 CVS
+##############################################################
+## MOD History:
+##  (yyyy-mm-dd)
+##   2006-10-16 - Version 0.8.0(BETA)
+##      Initial release
+##############################################################
+## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
+##############################################################
+
+#
+#-----[ OPEN ]-------------------------------------------------
+#
+
+viewforum.php
+
+#
+#-----[ FIND ]-------------------------------------------------
+#
+
+// Send vars to template
+
+#
+#-----[ BEFORE, ADD ]------------------------------------------
+#
+
+// Start add Topic Description Mod
+		$sql = 'SELECT post_text, bbcode_uid
+			FROM ' . POSTS_TABLE . '
+			WHERE post_id = ' . $row['topic_first_post_id'];
+		$result = $db->sql_query($sql);
+		$row2 = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+		$row2['post_text'] = censor_text($row2['post_text']);
+		strip_bbcode($row2['post_text'], $row2['bbcode_uid']);
+		decode_message($row2['post_text'], $row2['bbcode_uid']);
+// End add Topic Description Mod
+
+#
+#-----[ FIND ]-------------------------------------------------
+#
+
+			'TOPIC_TITLE'		=> censor_text($row['topic_title']),
+
+#
+#-----[ AFTER, ADD ]-------------------------------------------
+#
+
+// Start add Topic Description Mod
+			'TOPIC_DESC'		=> $row2['post_text'],
+// End add Topic Description Mod
+
+#
+#-----[ OPEN ]-------------------------------------------------
+#
+
+styles/subSilver/templates/viewforum_body.html
+
+#
+#-----[ FIND ]-------------------------------------------------
+#
+
+					{topicrow.ATTACH_ICON_IMG} <!-- IF topicrow.S_HAS_POLL or topicrow.S_TOPIC_MOVED --><b>{topicrow.TOPIC_TYPE}</b> <!-- ENDIF --><a href="{topicrow.U_VIEW_TOPIC}" class="topictitle">{topicrow.TOPIC_TITLE}</a>
+
+#
+#-----[ IN-LINE FIND ]-----------------------------------------
+#
+
+>{topicrow.TOPIC_TITLE}
+
+#
+#-----[ IN-LINE BEFORE, ADD ]----------------------------------
+#
+
+ title="{topicrow.TOPIC_DESC}"
+ 
+#
+#-----[ FIND ]-------------------------------------------------
+# (yes, it needs to be done 2 times)
+
+					{topicrow.ATTACH_ICON_IMG} <!-- IF topicrow.S_HAS_POLL or topicrow.S_TOPIC_MOVED --><b>{topicrow.TOPIC_TYPE}</b> <!-- ENDIF --><a href="{topicrow.U_VIEW_TOPIC}" class="topictitle">{topicrow.TOPIC_TITLE}</a>
+
+#
+#-----[ IN-LINE FIND ]-----------------------------------------
+#
+
+>{topicrow.TOPIC_TITLE}
+
+#
+#-----[ IN-LINE BEFORE, ADD ]----------------------------------
+#
+
+ title="{topicrow.TOPIC_DESC}"
+ 
+#
+#-----[ SAVE/CLOSE ALL FILES ]---------------------------------
+#
+# EoM

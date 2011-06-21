@@ -1,0 +1,108 @@
+##############################################################
+## MOD Title: Recent Topic Titles in Header
+## MOD Author: EXreaction < exreaction@gotechzilla.com > (Nathan Guse) http://www.gotechzilla.com
+##
+## MOD Description: Shows recent topic titles in overall header.
+## MOD Version: 1.0.0 (designed for phpBB 3 B1)
+##
+## Installation Level: Easy
+## Installation Time: ~1 min
+## Files To Edit:
+##			includes/fuctions.php
+##			styles/subSilver/templates/overall_header.html
+##
+## Included Files: (none)
+##############################################################
+## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
+##############################################################
+
+#
+#-----[ OPEN ]------------------------------------------
+#
+
+includes/fuctions.php
+
+#
+#-----[ FIND ]------------------------------------------
+#
+
+		'T_THEME_DATA'			=> (!$user->theme['theme_storedb']) ? '' : $user->theme['theme_data'],
+		'SITE_LOGO_IMG'			=> $user->img('site_logo'))
+	);
+
+#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+
+// Start Recent Posts in Header MOD
+	$sql = 'SELECT topic_title, forum_id, topic_id
+		FROM ' . TOPICS_TABLE . '
+		WHERE topic_status <> 2
+			AND topic_approved = 1
+		ORDER BY topic_time DESC LIMIT 0, 6';
+	$result = $db->sql_query($sql);
+
+	$i=0;
+	while($row = $db->sql_fetchrow($result))
+	{
+
+		$view_topic_url = "viewtopic.php?f=" . $row['forum_id'] . "&t=" . $row['topic_id'];
+
+		$latest_topics = array(
+			'TITLE'	 	=> censor_text($row['topic_title']),
+			'U_VIEW_TOPIC'	=> $view_topic_url,
+			'ROW_COUNT'		=> $i
+		);
+
+		$template->assign_block_vars('latest_topics', $latest_topics);
+		$i++;
+	}
+// End Recent Posts in Header MOD
+
+#
+#-----[ OPEN ]------------------------------------------
+#
+
+styles/subSilver/templates/overall_header.html
+
+#
+#-----[ FIND ]------------------------------------------
+#
+
+	<div id="logodesc">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td><a href="{U_INDEX}">{SITE_LOGO_IMG}</a></td>
+			<td width="100%" align="center"><h1>{SITENAME}</h1><span class="gen">{SITE_DESCRIPTION}</span></td>
+		</tr>
+		</table>
+	</div>
+
+
+#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+
+	<div id="logodesc">
+		<table width="100%" cellspacing="0">
+		<tr>
+			<td>{SITE_LOGO_IMG}</td>
+			<td width="45%" align="right"><h1>{SITENAME}</h1><span class="gen">{SITE_DESCRIPTION}</span></td>
+			<td width="100%" align="right">
+				<table class="tablebg" cellpadding="2" cellspacing="1">
+					<th colspan="2" align="center">Recent Topics</th>
+<!-- BEGIN latest_topics -->
+					<!-- IF latest_topics.ROW_COUNT is even --><tr><!-- ENDIF -->
+						<td class="row2" align="left"><a href="{latest_topics.U_VIEW_TOPIC}">{latest_topics.TITLE}</a><!-- IF latest_topics.ROW_COUNT is even -->&nbsp; &nbsp; &nbsp;<!-- ENDIF --></td>
+					<!-- IF latest_topics.ROW_COUNT is odd --></tr><!-- ENDIF -->
+<!-- END latest_topics -->
+				</table>
+			</td>
+		</tr>
+		</table>
+	</div>
+
+#
+#-----[ SAVE/CLOSE ALL FILES ]-----------------------------------------
+#
+# EoM

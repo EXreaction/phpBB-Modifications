@@ -1,0 +1,46 @@
+############################################################## 
+## MOD Title:          Signatures control(update for phpBB 2.0.20)
+## MOD Author:         -=ET=- < space_et@tiscali.fr > (n/a) http://www.golfexpert.net/phpbb
+## Updated by:         EXreaction < exreaction@gotechzilla.com > (Nathan Guse) http://www.gotechzilla.com
+############################################################## 
+## Author Notes: 
+## 
+## Edit the signatures_control file and do the changes below...
+##  Then install the mod...I reccomend EasyMod. :D
+##
+##############################################################
+
+# 
+#-----[ OPEN ]------------------------------------------------ 
+#
+
+signatures_control_1.2.3em.txt
+
+# 
+#-----[ FIND ]------------------------------------------------
+#
+
+if ( $user_sig != '' && $user_sig_bbcode_uid != '' )
+
+# 
+#-----[ REPLACE WITH ]---------------------------------------- 
+#
+
+if ($user_sig != '' && $user_sig_bbcode_uid != '')
+
+# 
+#-----[ FIND ]------------------------------------------------
+#
+
+if ( $signature_bbcode_uid == '' )
+
+# 
+#-----[ REPLACE WITH ]---------------------------------------- 
+#
+
+if ( !isset($signature_bbcode_uid) || $signature_bbcode_uid == '' )
+
+# 
+#-----[ SAVE/CLOSE ALL FILES ]-------------------------------- 
+# 
+# EoM

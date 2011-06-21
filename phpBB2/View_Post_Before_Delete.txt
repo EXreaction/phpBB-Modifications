@@ -1,0 +1,138 @@
+##############################################################
+## MOD Title: View Post Before Delete
+## MOD Author: EXreaction < nmguse@hotmail.com > (Nathan Guse) http://www.gotechzilla.com
+## MOD Description: When someone deletes a post or thread, the text from it is displayed on the delete page
+## MOD Version: (BETA)
+##
+## Installation Level: (Easy)
+## Installation Time: 
+## Files To Edit: posting.php
+##                templates/subSilver/confirm_body.tpl
+## Included Files: none
+## License: http://opensource.org/licenses/gpl-license.php GNU General Public License v2
+##############################################################
+## For security purposes, please check: http://www.phpbb.com/mods/
+## for the latest version of this MOD. Although MODs are checked
+## before being allowed in the MODs Database there is no guarantee
+## that there are no security problems within the MOD. No support
+## will be given for MODs not found within the MODs Database which
+## can be found at http://www.phpbb.com/mods/
+##############################################################
+## Author Notes:
+##	Gotta figure out how to format everything with BBCode yet...
+##############################################################
+## MOD History:
+## 
+##   2006-03-22 - BETA
+##      - I still don't know how to format everything in BB Code...but other than that, everything should be good
+##############################################################
+## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
+##############################################################
+
+# 
+#-----[ OPEN ]------------------------------------------
+# 
+	
+posting.php
+
+#
+#-----[ FIND ]------------------------------------------
+#
+
+	$template->set_filenames(array(
+		'confirm_body' => 'confirm_body.tpl')
+	);
+
+# 
+#-----[ AFTER, ADD ]------------------------------------------
+# 
+
+	// START View Post Before Delete MOD
+	$EX_sql1 = mysql_query("SELECT post_text FROM phpbb_posts_text WHERE post_id = '$post_id'");
+	$post_contents1=mysql_fetch_object($EX_sql1);
+	
+	$EX_sql2 = mysql_query("SELECT poster_id FROM phpbb_posts WHERE post_id = '$post_id'");
+	$post_contents2=mysql_fetch_object($EX_sql2);
+		
+	$EX_sql3 = mysql_query("SELECT username, user_rank FROM phpbb_users WHERE user_id = '$post_contents2->poster_id'");
+	$post_contents3=mysql_fetch_object($EX_sql3);
+	
+	$EX_sql4 = mysql_query("SELECT rank_title FROM phpbb_ranks WHERE rank_id = '$post_contents3->user_rank'");
+	$post_contents4=mysql_fetch_object($EX_sql4);
+	
+	if ($_GET['mode']=='delete')
+	{
+		$template->assign_block_vars('switch_enable_delete_text', array());
+	}
+	// END View Post Before Delete MOD
+
+#
+#-----[ FIND ]------------------------------------------
+#
+
+	$template->assign_vars(array(
+
+# 
+#-----[ AFTER, ADD ]------------------------------------------
+# 
+
+		// START View Post Before Delete MOD
+		'POST_TEXT' => $post_contents1->post_text,
+		'POSTER_NAME' => $post_contents3->username,
+		'POSTER_RANK' => $post_contents4->rank_title,
+		'L_AUTHOR' => $lang['Author'],
+		'L_MESSAGE' => $lang['Message'],
+		// END View Post Before Delete MOD
+
+# 
+#-----[ OPEN ]------------------------------------------
+# 
+
+templates/subSilver/confirm_body.tpl
+
+#
+#-----[ FIND ]------------------------------------------
+#
+
+<td class="row1" align="center"><form action="{S_CONFIRM_ACTION}" method="post">
+
+#
+#-----[ IN-LINE FIND ]------------------------------------------
+#
+
+{MESSAGE_TEXT}<br />
+
+# 
+#-----[ IN-LINE AFTER, ADD ]------------------------------------------
+# Put this on a seperate line...make sure the BEGIN and END are on lines all by themselves...
+# Don't know the "right" way to say this...
+
+
+<!-- BEGIN switch_enable_delete_text -->
+
+&nbsp;
+<table class="forumline" width="75%" cellspacing="1" cellpadding="3" border="0">
+	<tr>
+		<th class="thLeft" width="150" height="26" nowrap="nowrap">{L_AUTHOR}</th>
+		<th class="thRight" nowrap="nowrap">{L_MESSAGE}</th>
+	</tr>
+	<tr>
+		<td width="150" align="left" valign="top" class="row1"><span class="name"><a name="1"></a><b>{POSTER_NAME}</b></span><br /><span class="postdetails">{POSTER_RANK}<br /><br /><br /><br /><br /></span><br /></td>
+		<td class="row1" width="100%" height="28" valign="top">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+
+				<td width="100%">
+			<tr>
+				<td colspan="2"><span class="postbody">{POST_TEXT}</span></td>
+			</tr>
+		</table>
+	</table>
+<!-- END switch_enable_delete_text -->
+
+
+
+#
+#-----[ SAVE/CLOSE ALL FILES ]------------------------------------------
+#
+# EoM

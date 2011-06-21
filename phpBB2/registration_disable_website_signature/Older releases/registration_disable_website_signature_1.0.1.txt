@@ -1,0 +1,100 @@
+##############################################################
+## MOD Title: No Sig/Website during registration
+## MOD Author: EXreaction < nmguse@hotmail.com > (Nathan Guse) www.gotechzilla.com
+## MOD Description: When a user registers, the signature and/or website link sections are removed
+## MOD Version: 1.0.1
+##
+## Installation Level: (Easy)
+## Installation Time: ~1 Minute
+## Files To Edit: templates/subSilver/profile_add_body.tpl
+## Included Files: none
+## License: http://opensource.org/licenses/gpl-license.php GNU General Public License v2
+##############################################################
+## For security purposes, please check: http://www.phpbb.com/mods/
+## for the latest version of this MOD. Although MODs are checked
+## before being allowed in the MODs Database there is no guarantee
+## that there are no security problems within the MOD. No support
+## will be given for MODs not found within the MODs Database which
+## can be found at http://www.phpbb.com/mods/
+##############################################################
+## Author Notes:
+## This is my first mod for phpbb! :D
+## Should work with easymod...but it only takes a minute to mod anyways...
+##
+## If you only want to disable the website during registration, only do the top section
+## If you only want the signature disabled during registraton, only do the bottom
+##############################################################
+## MOD History:
+## 
+##   2006-02-22 - Version 1.0.0
+##      - (no version notes)
+##   2006-03-12 - Version 1.0.1
+##      - Re-wrote the MOD...I learned a much easier and better way to do it since 1.0.0
+##   2006-03-17 - Version 1.0.2
+##      - Fixed it so bots can't fill it in even though it is hidden
+##############################################################
+## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
+##############################################################
+
+# 
+#-----[ OPEN ]------------------------------------------
+# 
+	
+templates/subSilver/profile_add_body.tpl
+
+#
+#-----[ FIND ]------------------------------------------
+# Line 101
+# This part is for removing the website section...
+
+	<tr> 
+	  <td class="row1"><span class="gen">{L_WEBSITE}:</span></td>
+
+# 
+#-----[ BEFORE, ADD ]------------------------------------------
+# 
+
+	<!-- BEGIN switch_user_logged_in -->
+
+#
+#-----[ FIND ]------------------------------------------
+# This part is for removing the website section as well...
+
+	</tr>
+
+# 
+#-----[ AFTER, ADD ]------------------------------------------
+# 
+
+	<!-- END switch_user_logged_in -->
+
+#
+#-----[ FIND ]------------------------------------------
+# This part is for removing the signature section...
+# note: Second line is longer than shown
+
+	<tr>
+	  <td class="row1"><span class="gen">{L_SIGNATURE}
+
+# 
+#-----[ BEFORE, ADD ]------------------------------------------
+# 
+
+	<!-- BEGIN switch_user_logged_in -->
+
+#
+#-----[ FIND ]------------------------------------------
+# This part is for removing the signature section as well...
+
+	</tr>
+
+# 
+#-----[ AFTER, ADD ]------------------------------------------
+# 
+
+	<!-- END switch_user_logged_in -->
+
+#
+#-----[ SAVE/CLOSE ALL FILES ]------------------------------------------
+#
+# EoM

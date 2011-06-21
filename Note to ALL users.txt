@@ -1,0 +1,5 @@
+Many modifications listed under this directory are unfinished and unsupported.
+
+If the modification is not listed on my site (lithiumstudios.org) it is NOT supported, nor will it be supported.
+
+Old versions of modifications found in this repository are not supported either.

@@ -1,0 +1,197 @@
+##############################################################
+## MOD Title: Per Forum Posts Per Page
+## MOD Author: EXreaction < exreaction@lithiumstudios.org > (Nathan Guse) http://www.lithiumstudios.org
+##
+## MOD Description: Allows you to set the number of posts displayed on a page per forum.
+##
+## MOD Version: 1.0.0
+##
+## Installation Level:	Intermediate
+## Installation Time:	~5 min
+##
+## Files To Edit:	admin/admin_forums.php
+##					language/lang_english/lang_admin.php
+##					templates/subSilver/admin/forum_edit_body.tpl
+##					viewtopic.php
+##
+## Included Files:	
+##
+## License: http://opensource.org/licenses/gpl-license.php GNU General Public License v2
+##############################################################
+## For security purposes, please check: http://www.phpbb.com/mods/
+## for the latest version of this MOD. Although MODs are checked
+## before being allowed in the MODs Database there is no guarantee
+## that there are no security problems within the MOD. No support
+## will be given for MODs not found within the MODs Database which
+## can be found at http://www.phpbb.com/mods/
+##############################################################
+## MOD History:
+##	(yyyy-mm-dd)
+##	2007-12-7
+##		+ 1.0.0 Initial Release
+##############################################################
+## Before Adding This MOD To Your Forum, You Should Back Up All Files Related To This MOD
+##############################################################
+
+#
+#-----[ SQL ]------------------------------------
+#
+
+ALTER TABLE `phpbb_forums` ADD `posts_per_page` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '0';
+
+#
+#-----[ OPEN ]-----------------------------------
+#
+
+admin/admin_forums.php
+
+#
+#-----[ FIND ]-----------------------------------
+#
+
+				'S_FORUM_ACTION' => append_sid("admin_forums.$phpEx"),
+
+#
+#-----[ BEFORE, ADD ]----------------------------
+#
+
+				'L_PFPPP'	=> $lang['PFPPP'],
+				'PFPPP'		=> ($mode == 'editforum') ? $row['posts_per_page'] : 0,
+
+#
+#-----[ FIND ]-----------------------------------
+#
+
+$sql = "INSERT INTO " . FORUMS_TABLE
+
+#
+#-----[ IN-LINE FIND ]---------------------------
+#
+
+" . $field_sql
+
+#
+#-----[ IN-LINE BEFORE, ADD ]--------------------
+#
+
+, posts_per_page
+
+#
+#-----[ FIND ]-----------------------------------
+#
+
+VALUES
+
+#
+#-----[ IN-LINE FIND ]---------------------------
+#
+
+ . $value_sql
+
+#
+#-----[ IN-LINE BEFORE, ADD ]--------------------
+#
+
+ . ", " . intval($HTTP_POST_VARS['pfppp'])
+
+#
+#-----[ FIND ]-----------------------------------
+#
+
+SET forum_name
+
+#
+#-----[ IN-LINE FIND ]---------------------------
+#
+
+intval($HTTP_POST_VARS['prune_enable']) . "
+
+#
+#-----[ IN-LINE AFTER, ADD ]---------------------
+#
+
+, posts_per_page = " . intval($HTTP_POST_VARS['pfppp']) . "
+
+#
+#-----[ OPEN ]-----------------------------------
+#
+
+language/lang_english/lang_admin.php
+
+#
+#-----[ FIND ]-----------------------------------
+#
+
+?>
+
+#
+#-----[ BEFORE, ADD ]----------------------------
+#
+
+$lang['PFPPP'] = 'Posts Per Page<br/>(0 for board default)';
+
+#
+#-----[ OPEN ]-----------------------------------
+#
+
+templates/subSilver/admin/forum_edit_body.tpl
+
+#
+#-----[ FIND ]-----------------------------------
+#
+
+<tr>
+{S_HIDDEN_FIELDS}
+
+#
+#-----[ BEFORE, ADD ]----------------------------
+#
+
+	<tr> 
+	  <td class="row1">{L_PFPPP}</td>
+	  <td class="row2"><input type="text" size="5" name="pfppp" value="{PFPPP}" class="post" /></td>
+	</tr>
+
+#
+#-----[ OPEN ]-----------------------------------
+#
+
+viewtopic.php
+
+#
+#-----[ FIND ]-----------------------------------
+#
+
+$sql = "SELECT t.topic_id, t.topic_title, t.topic_status, t.topic_replies, t.topic_time, t.topic_type, t.topic_vote
+
+#
+#-----[ IN-LINE FIND ]---------------------------
+#
+
+" . $count_sql
+
+#
+#-----[ IN-LINE BEFORE, ADD ]--------------------
+#
+
+, f.posts_per_page
+
+#
+#-----[ FIND ]-----------------------------------
+#
+
+$forum_id = intval($forum_topic_data['forum_id']);
+
+#
+#-----[ AFTER, ADD ]-----------------------------
+#
+
+if ($forum_topic_data['posts_per_page'])
+{
+	$board_config['posts_per_page'] = intval($forum_topic_data['posts_per_page']);
+}
+
+#
+#-----[ SAVE/CLOSE ALL FILES ]-----------------------------
+#
+# EoM

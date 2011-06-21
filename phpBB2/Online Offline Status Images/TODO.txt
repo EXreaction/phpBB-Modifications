@@ -1,0 +1,32 @@
+TerraFrost wrote:
+(from online_offline.php)
+Code:
+   if ($userdata['user_id'] == ANONYMOUS)
+   {
+      $style_path = $phpbb_root_path . 'templates/' . $theme['template_name'] . '/images/lang_' . $board_config['default_lang'] . '/';
+   }
+   else
+   {
+      $style_path = $phpbb_root_path . 'templates/' . $theme['template_name'] . '/images/lang_' . $userdata['user_lang'] . '/';
+   }
+
+functions.php's init_userprefs() guarantees that $board_config['default_lang'] and $userdata['user_lang'] are always equal. To that end, if the board's default language is English and a user's language of choice is Spanish, both $board_config['default_lang'] and $userdata['user_lang'] will be set to Spanish.
+
+It's not really all that important (and certainly not a reason to get a MOD denied), however... it's something I thought I'd mention, none-the-less.
+
+Code:
+   if (in_array($user_id, $online_array))
+   {
+      return '<img src="' . $style_path . 'icon_online.gif"> ';
+   }
+   else
+   {
+      return '<img src="' . $style_path . 'icon_offline.gif"> ';
+   }
+
+viewtopic.php doesn't have the image name hard-coded within it - it uses $images['icon_icq'] to define the image, where $images['icon_icq'] is defined in subSilver.cfg (or whatever the *.cfg name is). You should, too.
+
+Reference:
+
+Code:
+         $icq_img = '<a href="http://wwp.icq.com/scripts/search.dll?to=' . $postrow[$i]['user_icq'] . '"><img src="' . $images['icon_icq'] . '" alt="' . $lang['ICQ'] . '" title="' . $lang['ICQ'] . '" border="0" /></a>';
